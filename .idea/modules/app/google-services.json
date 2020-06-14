@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1031208504569",
+    "firebase_url": "https://gallerify-d69e0.firebaseio.com",
+    "project_id": "gallerify-d69e0",
+    "storage_bucket": "gallerify-d69e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031208504569:android:03d60859d5ee1cce222628",
+        "android_client_info": {
+          "package_name": "com.example.gallerify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1031208504569-oar8703aqof17fcsvf5sbo23qvp8voo1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gallerify",
+            "certificate_hash": "0ed7558c8bc1f4b65950e930ddfb382863129f85"
+          }
+        },
+        {
+          "client_id": "1031208504569-rtumfa8pssm95itc6rqsfbugod1p8aip.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeYghCpivRfQ528lU3LS0BCwZ9TbcpYqo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1031208504569-rtumfa8pssm95itc6rqsfbugod1p8aip.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
