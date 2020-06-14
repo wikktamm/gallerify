@@ -1,0 +1,1 @@
+class ImageLabelingModel(val text: String?, val confidence: Float)
