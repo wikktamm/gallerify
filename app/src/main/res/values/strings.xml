@@ -8,4 +8,5 @@
     <string name="paste_url">Paste url</string>
     <string name="cancel">Cancel</string>
     <string name="prompt_how_would_you_like_to_add_the_image">How would you like to add the image?</string>
+    <string name="invalid_url">This url is invalid!</string>
 </resources>

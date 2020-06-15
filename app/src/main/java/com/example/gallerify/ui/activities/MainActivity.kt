@@ -10,11 +10,9 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import com.example.gallerify.R
 import com.example.gallerify.ui.dialogs.DialogAddPicture
 import com.example.gallerify.ui.dialogs.DialogNewPicture
-import com.example.gallerify.utils.Constants
 import com.example.gallerify.utils.Constants.REQUEST_CODE_CAMERA
 import com.example.gallerify.utils.Constants.REQUEST_CODE_GALLERY
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,7 +20,6 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -73,9 +70,7 @@ class MainActivity : AppCompatActivity() {
         }
         dialog.setOnOptionCameraClickListener {
             openCamera()
-        }
-        dialog.setOnOptionUrlClickListener {
-            //todo
+            dialog.dismiss()
         }
         dialog.show(supportFragmentManager, "dialog1")
     }
@@ -83,33 +78,29 @@ class MainActivity : AppCompatActivity() {
     private fun openGallery() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
-        startActivityForResult(intent, Constants.REQUEST_CODE_GALLERY)
+        startActivityForResult(intent, REQUEST_CODE_GALLERY)
     }
 
     private fun openCamera() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(packageManager) != null) {
-            // Create the File where the photo should go
             var photoFile: File? = null
             try {
                 photoFile = createImageFile()
             } catch (e: IOException) {
-
+                return
             }
             // Continue only if the File was successfully created
-            if (photoFile != null) {
-                val photoURI = FileProvider.getUriForFile(
-                    this,
-                    "com.example.gallerify" +
-                            ".fileprovider",
-                    photoFile
-                )
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                startActivityForResult(takePictureIntent, REQUEST_CODE_CAMERA)
-            }
+            val photoURI = FileProvider.getUriForFile(
+                this,
+                "com.example.gallerify" +
+                        ".fileprovider",
+                photoFile
+            )
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+            startActivityForResult(takePictureIntent, REQUEST_CODE_CAMERA)
         }
-
     }
 
     private lateinit var currentPhotoPath: String
@@ -128,7 +119,6 @@ class MainActivity : AppCompatActivity() {
             currentPhotoPath = absolutePath
         }
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -161,6 +151,4 @@ class MainActivity : AppCompatActivity() {
         dialog2.rememberBitmapToDisplay(bitmap)
         dialog2.show(supportFragmentManager, "dialog2")
     }
-
-
 }

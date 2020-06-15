@@ -1,15 +1,12 @@
 package com.example.gallerify.ui.dialogs
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.example.gallerify.R
-import com.example.gallerify.utils.Constants
 import kotlinx.android.synthetic.main.dialog_add_picture.*
-
 
 class DialogAddPicture : DialogFragment() {
     private var _onOptionCameraClickListener: (() -> Unit)? = null
@@ -20,11 +17,6 @@ class DialogAddPicture : DialogFragment() {
     private var _onOptionGalleryClickListener: (() -> Unit)? = null
     fun setOnOptionGalleryClickListener(func: (() -> Unit)) {
         _onOptionGalleryClickListener = func
-    }
-
-    private var _onOptionUrlClickListener: (() -> Unit)? = null
-    fun setOnOptionUrlClickListener(func: (() -> Unit)) {
-        _onOptionUrlClickListener = func
     }
 
     override fun onCreateView(
@@ -43,14 +35,8 @@ class DialogAddPicture : DialogFragment() {
         btGallery.setOnClickListener {
             _onOptionGalleryClickListener?.invoke()
         }
-        btUrl.setOnClickListener {
-            _onOptionUrlClickListener?.invoke()
-        }
         tvCancel.setOnClickListener {
             dismiss()
         }
     }
-
-
-
 }

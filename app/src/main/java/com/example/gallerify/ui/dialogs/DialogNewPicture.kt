@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import coil.api.load
 import com.example.gallerify.R
 import kotlinx.android.synthetic.main.dialog_new_picture.*
 
@@ -14,6 +15,7 @@ class DialogNewPicture : DialogFragment() {
 
     private var chosenPictureUri: Uri? = null
     private var chosenPictureBitmap: Bitmap? = null
+
     private var _onOptionYesClickListener: (() -> Unit)? = null
     fun setOnOptionYesClickListener(func: (() -> Unit)) {
         _onOptionYesClickListener = func
@@ -38,7 +40,7 @@ class DialogNewPicture : DialogFragment() {
         chosenPictureBitmap?.let {
             ivResult.setImageBitmap(chosenPictureBitmap)
         }
-        chosenPictureUri.let {
+        chosenPictureUri?.let {
             ivResult.setImageURI(chosenPictureUri)
         }
         tvYes.setOnClickListener {
@@ -63,5 +65,4 @@ class DialogNewPicture : DialogFragment() {
         chosenPictureBitmap = bitmap
         chosenPictureUri = null
     }
-
 }
