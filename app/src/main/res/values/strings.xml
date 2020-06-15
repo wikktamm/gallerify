@@ -3,4 +3,9 @@
 
     <string name="action_gallery">Gallery</string>
     <string name="permission_request">This app needs to access files on your device</string>
+    <string name="take_a_photo">Take a photo</string>
+    <string name="choose_from_gallery">Choose from the gallery</string>
+    <string name="paste_url">Paste url</string>
+    <string name="cancel">Cancel</string>
+    <string name="prompt_how_would_you_like_to_add_the_image">How would you like to add the image?</string>
 </resources>

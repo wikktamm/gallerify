@@ -1,5 +1,6 @@
 package com.example.gallerify.ui.dialogs
 
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import kotlinx.android.synthetic.main.dialog_new_picture.*
 class DialogNewPicture : DialogFragment() {
 
     private var chosenPictureUri: Uri? = null
+    private var chosenPictureBitmap: Bitmap? = null
     private var _onOptionYesClickListener: (() -> Unit)? = null
     fun setOnOptionYesClickListener(func: (() -> Unit)) {
         _onOptionYesClickListener = func
@@ -33,13 +35,33 @@ class DialogNewPicture : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ivResult.setImageURI(chosenPictureUri)
+        chosenPictureBitmap?.let {
+            ivResult.setImageBitmap(chosenPictureBitmap)
+        }
+        chosenPictureUri.let {
+            ivResult.setImageURI(chosenPictureUri)
+        }
         tvYes.setOnClickListener {
             _onOptionYesClickListener?.invoke()
         }
+        tvNo.setOnClickListener {
+            dismiss()
+        }
+        btRotateLeft.setOnClickListener {
+            ivResult.rotation = ivResult.rotation - 90f
+        }
+        btRotateRight.setOnClickListener {
+            ivResult.rotation = ivResult.rotation + 90f
+        }
     }
 
-    fun setUriToDisplay(uri: Uri) {
+    fun rememberUriToDisplay(uri: Uri) {
         chosenPictureUri = uri
+        chosenPictureBitmap = null
     }
+    fun rememberBitmapToDisplay(bitmap: Bitmap) {
+        chosenPictureBitmap = bitmap
+        chosenPictureUri = null
+    }
+
 }

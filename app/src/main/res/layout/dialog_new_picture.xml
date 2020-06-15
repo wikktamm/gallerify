@@ -8,21 +8,22 @@
     <ImageView
         android:id="@+id/ivResult"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_margin="3dp"
         android:adjustViewBounds="true"
         android:src="@drawable/car"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvQuestion1" />
+        app:layout_constraintTop_toBottomOf="@+id/layoutTop" />
 
     <TextView
-        android:id="@+id/tvCancel"
+        android:id="@+id/tvNo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="14dp"
-        android:text="No"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="40dp"
+        android:layout_marginBottom="14dp"
+        android:text="No"
         android:textAllCaps="true"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
@@ -31,32 +32,62 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivResult" />
 
-    <TextView
-        android:id="@+id/tvQuestion1"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutTop"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/gradient_background_dialog"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text="Do you want to add this picture to your gallery?"
-        android:textAllCaps="true"
-        android:textColor="@color/white"
-        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/btRotateRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btRotateLeft"
+            app:layout_constraintTop_toBottomOf="@id/tvQuestion1"
+            app:srcCompat="@drawable/ic_rotate_right" />
+
+        <TextView
+            android:id="@+id/tvQuestion1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Do you want to add this picture to your gallery?"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/btRotateLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/btRotateRight"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvQuestion1"
+            app:srcCompat="@drawable/ic_rotate_left" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <TextView
         android:id="@+id/tvYes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Yes"
         android:layout_marginStart="40dp"
+        android:text="Yes"
         android:textAllCaps="true"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/tvCancel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvCancel" />
+        app:layout_constraintTop_toTopOf="@+id/tvNo" />
 </androidx.constraintlayout.widget.ConstraintLayout>
