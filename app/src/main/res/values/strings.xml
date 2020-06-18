@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Gallerify</string>
 
-    <string name="action_gallery">Gallery</string>
     <string name="permission_request">This app needs to access files on your device</string>
     <string name="take_a_photo">Take a photo</string>
     <string name="choose_from_gallery">Choose from the gallery</string>
@@ -9,4 +8,7 @@
     <string name="cancel">Cancel</string>
     <string name="prompt_how_would_you_like_to_add_the_image">How would you like to add the image?</string>
     <string name="invalid_url">This url is invalid!</string>
+    <string name="something_went_wrong">Something went wrong, try again</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="action_logout">Log out</string>
 </resources>

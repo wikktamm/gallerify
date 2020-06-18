@@ -4,9 +4,8 @@
     tools:context="com.firebase.gde.MainActivity">
 
     <item
-        android:id="@+id/action_gallery"
-        android:orderInCategory="102"
-        android:title="@string/action_gallery"
-        android:icon="@drawable/ic_gallery"
+        android:id="@+id/action_logout"
+        android:title="@string/action_logout"
+        android:icon="@drawable/icon_door"
         app:showAsAction="ifRoom"/>
 </menu>

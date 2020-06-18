@@ -8,25 +8,46 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.lifecycle.ViewModelProvider
 import com.example.gallerify.R
+import com.example.gallerify.repositories.ImageRepository
 import com.example.gallerify.ui.dialogs.DialogAddPicture
 import com.example.gallerify.ui.dialogs.DialogNewPicture
 import com.example.gallerify.utils.Constants.REQUEST_CODE_CAMERA
 import com.example.gallerify.utils.Constants.REQUEST_CODE_GALLERY
-import kotlinx.android.synthetic.main.activity_main.*
+import com.example.gallerify.utils.UserResource
+import com.example.gallerify.viewmodels.GalleryViewModel
+import com.example.gallerify.viewmodels.GalleryViewModelFactory
+import kotlinx.android.synthetic.main.activity_gallery.*
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class GalleryActivity : AppCompatActivity() {
+
+    private lateinit var viewModel: GalleryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_gallery)
+        setSupportActionBar(toolbar)
+        val repo = ImageRepository()
+        viewModel = ViewModelProvider(this, GalleryViewModelFactory(repo)).get(GalleryViewModel::class.java)
         setListeners()
+        ensureUserLoggedIn()
+        viewModel.currentUser.observe(this, androidx.lifecycle.Observer { resource->
+            when(resource){
+                is UserResource.LoggedOut -> {
+                    startActivity(LoginActivity.getLaunchIntent(this))
+                }
+            }
+        })
 //        imageView.buildDrawingCache(true)
         // To use default options:
 //        val labeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS)
@@ -53,6 +74,28 @@ class MainActivity : AppCompatActivity() {
 //        }
 
 
+    }
+
+    private fun ensureUserLoggedIn() {
+        Toast.makeText(this, viewModel.getCurrentUser()!!.email, Toast.LENGTH_SHORT).show()
+        if (viewModel.getCurrentUser() == null){
+            startActivity(LoginActivity.getLaunchIntent(this))
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.my_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.action_logout -> {
+                viewModel.logout()
+                true
+            }
+            else -> false
+        }
     }
 
     private fun setListeners() {
