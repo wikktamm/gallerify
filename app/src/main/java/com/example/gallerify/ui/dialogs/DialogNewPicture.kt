@@ -45,12 +45,13 @@ class DialogNewPicture : DialogFragment() {
             val viewModel = (activity as GalleryActivity).viewModel
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 val bitmap = ImageUtils.getBitmap(ivResult)
-                viewModel.saveImage(bitmap, ivResult)
+                val byteArray = ImageUtils.compressToByteArray(bitmap)
+                viewModel.saveImage(byteArray, ivResult)
             }
-            else{
-//                val bitmap =  ImageUtils.getBitmap(ivResult, requireActivity(), viewModel.sa)
+            else{//todo
+//                val bitmap =  ImageUtils.getBitmap(ivResult, requireActivity(), viewModel.saveImage())
             }
-            Toast.makeText(activity, "aaa", Toast.LENGTH_SHORT).show()
+            dismiss()
         }
         tvNo.setOnClickListener {
             dismiss()

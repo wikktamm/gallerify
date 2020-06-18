@@ -5,14 +5,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.gallerify.R
 import com.example.gallerify.repositories.ImageRepository
 import com.example.gallerify.utils.Constants.REQUEST_CODE_GOOGLE_SIGN_IN
 import com.example.gallerify.utils.Constants.TAG_LoginActivity
-import com.example.gallerify.utils.Resource
+import com.example.gallerify.utils.resources.Resource
 import com.example.gallerify.utils.displayToast
 import com.example.gallerify.viewmodels.LoginViewModel
 import com.example.gallerify.viewmodels.LoginViewModelFactory

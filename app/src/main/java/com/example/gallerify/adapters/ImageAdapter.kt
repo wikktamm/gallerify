@@ -16,7 +16,7 @@ class ImageAdapter : RecyclerView.Adapter<ImageAdapter.ImageViewHolder>() {
         }
 
         override fun areContentsTheSame(oldItem: LabelledImage, newItem: LabelledImage): Boolean {
-            return oldItem.url == newItem.url
+            return oldItem.uid == newItem.uid
         }
     }
 

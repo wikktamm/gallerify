@@ -10,7 +10,6 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
@@ -20,7 +19,7 @@ import com.example.gallerify.ui.dialogs.DialogAddPicture
 import com.example.gallerify.ui.dialogs.DialogNewPicture
 import com.example.gallerify.utils.Constants.REQUEST_CODE_CAMERA
 import com.example.gallerify.utils.Constants.REQUEST_CODE_GALLERY
-import com.example.gallerify.utils.UserResource
+import com.example.gallerify.utils.resources.UserResource
 import com.example.gallerify.viewmodels.GalleryViewModel
 import com.example.gallerify.viewmodels.GalleryViewModelFactory
 import kotlinx.android.synthetic.main.activity_gallery.*

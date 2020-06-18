@@ -35,7 +35,7 @@ object ImageUtils {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getBitmapFromView(view: View, activity: Activity, callback: (Bitmap) -> Unit) {
+    fun getBitmap(view: View, activity: Activity, callback: (Bitmap) -> Unit) {
         activity.window?.let { window ->
             val bitmap =
                 Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)

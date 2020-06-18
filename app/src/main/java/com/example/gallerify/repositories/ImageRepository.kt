@@ -1,17 +1,14 @@
-
 package com.example.gallerify.repositories
 
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.media.Image
 import android.util.Log
 import android.widget.ImageView
-import android.widget.Toast
 import com.example.gallerify.models.LabelledImage
 import com.example.gallerify.utils.Constants.FIRESTORE_COLLECTION_IMAGES
+import com.example.gallerify.utils.Constants.FIRESTORE_COLLECTION_USERS_IMAGES
 import com.example.gallerify.utils.Constants.LABEL_CONFIDENCE_MIN_VALUE
-import com.example.gallerify.utils.ImageUtils
-import com.example.gallerify.utils.Resource
+import com.example.gallerify.utils.resources.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -29,22 +26,29 @@ class ImageRepository {
     private val auth by lazy { FirebaseAuth.getInstance() }
     private val storage by lazy { FirebaseStorage.getInstance() }
 
-    suspend fun saveImage(bitmap: Bitmap, imageView: ImageView): Resource<LabelledImage> {
+    suspend fun saveImage(byteArray: ByteArray, imageView: ImageView): Resource<LabelledImage> {
         val labellingResult = labelImage(imageView)
         if (labellingResult is Resource.Error) return Resource.Error()
-        val imageUID = UUID.randomUUID()
-        val byteArray = ImageUtils.compressToByteArray(bitmap)
-        storage.reference.child("${getCurrentUser()!!.uid}/${imageUID}.jpg").putBytes(byteArray)
+        val imageUID = UUID.randomUUID().toString()
+        val userUid = getCurrentUser()!!.uid
+        storage.reference.child("${userUid}/${imageUID}.jpg").putBytes(byteArray)
             .addOnSuccessListener {
                 Log.d("123", "ok")
             }
             .addOnFailureListener { e ->
                 Log.d("123", e.toString())
             }
-//        val labelledImage = LabelledImage(imageView.drawable.uri)
-//        storage.reference.pu
-//        imageCollection.p(image).await)
-        return Resource.Error()
+        val labelledImage = LabelledImage(imageUID, labellingResult.data!!)
+        var result: Resource<LabelledImage> = Resource.Loading()
+        imageCollection.document(userUid).collection(FIRESTORE_COLLECTION_USERS_IMAGES).add(labelledImage)
+            .addOnCompleteListener {
+                result = Resource.Success(labelledImage)
+            }
+            .addOnFailureListener {
+                result = Resource.Error(message = it.message)
+            }
+            .await()
+        return result
     }
 
     suspend fun firebaseAuthWithGoogle(idToken: String): Resource<FirebaseUser>? {
@@ -67,7 +71,8 @@ class ImageRepository {
     fun getCurrentUser() = auth.currentUser
 
     fun logout() = auth.signOut()
-    suspend fun labelImage(imageView: ImageView): Resource<MutableList<String>> {
+
+    suspend fun labelImage(imageView: ImageView): Resource<List<String>> { //todo
         imageView.buildDrawingCache(true) //todo
         var errorOccurred = false
         val tagList = mutableListOf<String>()
