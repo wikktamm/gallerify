@@ -31,7 +31,7 @@ import java.util.*
 
 class GalleryActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: GalleryViewModel
+    lateinit var viewModel: GalleryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,36 +48,9 @@ class GalleryActivity : AppCompatActivity() {
                 }
             }
         })
-//        imageView.buildDrawingCache(true)
-        // To use default options:
-//        val labeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS)
-//
-//        button.setOnClickListener {
-//
-//            val drawable = imageView.drawable as BitmapDrawable
-//            val bitmap: Bitmap = drawable.bitmap
-//            val image = InputImage.fromBitmap(bitmap, 0)
-//            labeler.process(image)
-//                .addOnSuccessListener { labels ->
-//                    // Task completed successfully
-//                    // ...
-//                    for (label in labels) {
-//                        val text = label.text
-//
-//                        textView.append(text + "\n")
-//                    }
-//                }
-//                .addOnFailureListener { e ->
-//                    // Task failed with an exception
-//                    // ...
-//                }
-//        }
-
-
     }
 
     private fun ensureUserLoggedIn() {
-        Toast.makeText(this, viewModel.getCurrentUser()!!.email, Toast.LENGTH_SHORT).show()
         if (viewModel.getCurrentUser() == null){
             startActivity(LoginActivity.getLaunchIntent(this))
         }
@@ -172,26 +145,26 @@ class GalleryActivity : AppCompatActivity() {
         } else if (requestCode == REQUEST_CODE_CAMERA && resultCode == Activity.RESULT_OK) {
             val file = File(currentPhotoPath)
             val bitmap = MediaStore.Images.Media
-                .getBitmap(contentResolver, Uri.fromFile(file))
+                .getBitmap(contentResolver, Uri.fromFile(file)) //todo
             displayDialogWithNewPicture(bitmap)
         }
     }
 
     private fun displayDialogWithNewPicture(uri: Uri) {
-        val dialog2 = DialogNewPicture()
-        dialog2.setOnOptionYesClickListener {
+        val dialog = DialogNewPicture()
+        dialog.setOnOptionYesClickListener {
             //todo
         }
-        dialog2.rememberUriToDisplay(uri)
-        dialog2.show(supportFragmentManager, "dialog2")
+        dialog.rememberUriToDisplay(uri)
+        dialog.show(supportFragmentManager, "dialog2")
     }
 
     private fun displayDialogWithNewPicture(bitmap: Bitmap) {
-        val dialog2 = DialogNewPicture()
-        dialog2.setOnOptionYesClickListener {
+        val dialog = DialogNewPicture()
+        dialog.setOnOptionYesClickListener {
             //todo
         }
-        dialog2.rememberBitmapToDisplay(bitmap)
-        dialog2.show(supportFragmentManager, "dialog2")
+        dialog.rememberBitmapToDisplay(bitmap)
+        dialog.show(supportFragmentManager, "dialog2")
     }
 }

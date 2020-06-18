@@ -2,13 +2,17 @@ package com.example.gallerify.ui.dialogs
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import coil.api.load
 import com.example.gallerify.R
+import com.example.gallerify.ui.activities.GalleryActivity
+import com.example.gallerify.utils.ImageUtils
 import kotlinx.android.synthetic.main.dialog_new_picture.*
 
 class DialogNewPicture : DialogFragment() {
@@ -20,12 +24,6 @@ class DialogNewPicture : DialogFragment() {
     fun setOnOptionYesClickListener(func: (() -> Unit)) {
         _onOptionYesClickListener = func
     }
-
-    private var _onOptionNoClickListener: (() -> Unit)? = null
-    fun setOnOptionNoClickListener(func: (() -> Unit)) {
-        _onOptionNoClickListener = func
-    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,7 +42,15 @@ class DialogNewPicture : DialogFragment() {
             ivResult.setImageURI(chosenPictureUri)
         }
         tvYes.setOnClickListener {
-            _onOptionYesClickListener?.invoke()
+            val viewModel = (activity as GalleryActivity).viewModel
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                val bitmap = ImageUtils.getBitmap(ivResult)
+                viewModel.saveImage(bitmap, ivResult)
+            }
+            else{
+//                val bitmap =  ImageUtils.getBitmap(ivResult, requireActivity(), viewModel.sa)
+            }
+            Toast.makeText(activity, "aaa", Toast.LENGTH_SHORT).show()
         }
         tvNo.setOnClickListener {
             dismiss()
@@ -61,6 +67,7 @@ class DialogNewPicture : DialogFragment() {
         chosenPictureUri = uri
         chosenPictureBitmap = null
     }
+
     fun rememberBitmapToDisplay(bitmap: Bitmap) {
         chosenPictureBitmap = bitmap
         chosenPictureUri = null
