@@ -10,7 +10,7 @@ import com.example.gallerify.models.LabelledImage
 class ImageAdapter : RecyclerView.Adapter<ImageAdapter.ImageViewHolder>() {
     inner class ImageViewHolder(private val item: View) : RecyclerView.ViewHolder(item)
 
-    val diffUtil = object : DiffUtil.ItemCallback<LabelledImage>() {
+    private val diffUtil = object : DiffUtil.ItemCallback<LabelledImage>() {
         override fun areItemsTheSame(oldItem: LabelledImage, newItem: LabelledImage): Boolean {
             return oldItem == newItem
         }
@@ -27,7 +27,7 @@ class ImageAdapter : RecyclerView.Adapter<ImageAdapter.ImageViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return diffUtilCallback.currentList.size
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {

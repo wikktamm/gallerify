@@ -17,7 +17,7 @@ import java.io.ByteArrayOutputStream
 
 object ImageUtils {
     fun compressToByteArray(imageView: ImageView): ByteArray {
-        val bitmap = (imageView.drawable as BitmapDrawable).bitmap
+        val bitmap = getBitmap(imageView)
         val baos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         return baos.toByteArray()
@@ -30,7 +30,7 @@ object ImageUtils {
     }
 
     fun getBitmap(imageView: ImageView): Bitmap {
-        imageView.buildDrawingCache(true)
+//        imageView.buildDrawingCache(true)
         return imageView.drawable.toBitmap()
     }
 

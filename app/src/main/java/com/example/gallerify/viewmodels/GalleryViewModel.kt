@@ -1,5 +1,6 @@
 package com.example.gallerify.viewmodels
 
+import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,9 +13,9 @@ class GalleryViewModel(private val repo: ImageRepository) : ViewModel() {
 
     val currentUser: MutableLiveData<UserResource> = MutableLiveData()//(UserResource.LoggedIn())
 
-    fun saveImage(byteArray: ByteArray, imageView: ImageView) {
+    fun saveImage(bitmap: Bitmap) {
         viewModelScope.launch {
-            repo.saveImage(byteArray, imageView)
+            repo.labelAndSaveImage(bitmap)
         }
     }
 
@@ -23,11 +24,5 @@ class GalleryViewModel(private val repo: ImageRepository) : ViewModel() {
     fun logout() {
         repo.logout()
         currentUser.postValue(UserResource.LoggedOut())
-    }
-
-    fun labelImage(imageView: ImageView) {
-        viewModelScope.launch {
-            repo.labelImage(imageView)
-        }
     }
 }

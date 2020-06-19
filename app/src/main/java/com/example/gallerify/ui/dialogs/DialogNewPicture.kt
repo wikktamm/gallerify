@@ -43,14 +43,8 @@ class DialogNewPicture : DialogFragment() {
         }
         tvYes.setOnClickListener {
             val viewModel = (activity as GalleryActivity).viewModel
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                val bitmap = ImageUtils.getBitmap(ivResult)
-                val byteArray = ImageUtils.compressToByteArray(bitmap)
-                viewModel.saveImage(byteArray, ivResult)
-            }
-            else{//todo
-//                val bitmap =  ImageUtils.getBitmap(ivResult, requireActivity(), viewModel.saveImage())
-            }
+            val bitmap = ImageUtils.getBitmap(ivResult)
+            viewModel.saveImage(bitmap)
             dismiss()
         }
         tvNo.setOnClickListener {

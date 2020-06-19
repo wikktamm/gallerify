@@ -8,6 +8,7 @@ import com.example.gallerify.models.LabelledImage
 import com.example.gallerify.utils.Constants.FIRESTORE_COLLECTION_IMAGES
 import com.example.gallerify.utils.Constants.FIRESTORE_COLLECTION_USERS_IMAGES
 import com.example.gallerify.utils.Constants.LABEL_CONFIDENCE_MIN_VALUE
+import com.example.gallerify.utils.ImageUtils
 import com.example.gallerify.utils.resources.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -26,11 +27,12 @@ class ImageRepository {
     private val auth by lazy { FirebaseAuth.getInstance() }
     private val storage by lazy { FirebaseStorage.getInstance() }
 
-    suspend fun saveImage(byteArray: ByteArray, imageView: ImageView): Resource<LabelledImage> {
-        val labellingResult = labelImage(imageView)
+    suspend fun labelAndSaveImage(bitmap: Bitmap): Resource<LabelledImage> {
+        val labellingResult = labelImage(bitmap)
         if (labellingResult is Resource.Error) return Resource.Error()
         val imageUID = UUID.randomUUID().toString()
         val userUid = getCurrentUser()!!.uid
+        val byteArray = ImageUtils.compressToByteArray(bitmap)
         storage.reference.child("${userUid}/${imageUID}.jpg").putBytes(byteArray)
             .addOnSuccessListener {
                 Log.d("123", "ok")
@@ -57,11 +59,9 @@ class ImageRepository {
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 result = if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
                     val user = auth.currentUser
                     Resource.Success(user)
                 } else {
-                    // If sign in fails, display a message to the user.
                     Resource.Error()
                 }
             }.await()
@@ -72,13 +72,10 @@ class ImageRepository {
 
     fun logout() = auth.signOut()
 
-    suspend fun labelImage(imageView: ImageView): Resource<List<String>> { //todo
-        imageView.buildDrawingCache(true) //todo
+    private suspend fun labelImage(bitmap: Bitmap): Resource<List<String>> {
         var errorOccurred = false
         val tagList = mutableListOf<String>()
         val labeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS)
-        val drawable = imageView.drawable as BitmapDrawable
-        val bitmap: Bitmap = drawable.bitmap
         val image = InputImage.fromBitmap(bitmap, 0)
         labeler.process(image)
             .addOnSuccessListener { labels ->
