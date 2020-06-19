@@ -1,3 +1,8 @@
 package com.example.gallerify.models
 
-data class LabelledImage(val uid: String, val tags : List<String>)//, val whenAdded:DateTime)
+import org.threeten.bp.LocalDateTime
+
+data class LabelledImage(val uid: String?, val tags : MutableList<String>?)//, val whenAdded: LocalDateTime?)
+{
+    constructor():this(null, null)//, null)
+}

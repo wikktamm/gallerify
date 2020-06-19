@@ -59,6 +59,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvImages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="8dp"

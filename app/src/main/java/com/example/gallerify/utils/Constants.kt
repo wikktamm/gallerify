@@ -15,4 +15,7 @@ object Constants {
 
     // min confidence value for the tags to be accepted
     const val LABEL_CONFIDENCE_MIN_VALUE = 0.7
+
+    // patterns
+    const val TIME_PATTERN_IMAGEFILE_TIMESTAMP = "yyyyMMdd_HHmmss"
 }

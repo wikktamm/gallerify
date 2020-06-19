@@ -8,17 +8,23 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gallerify.R
+import com.example.gallerify.adapters.ImageAdapter
 import com.example.gallerify.repositories.ImageRepository
 import com.example.gallerify.ui.dialogs.DialogAddPicture
 import com.example.gallerify.ui.dialogs.DialogNewPicture
 import com.example.gallerify.utils.Constants.REQUEST_CODE_CAMERA
 import com.example.gallerify.utils.Constants.REQUEST_CODE_GALLERY
+import com.example.gallerify.utils.Constants.TIME_PATTERN_IMAGEFILE_TIMESTAMP
+import com.example.gallerify.utils.displayToast
+import com.example.gallerify.utils.resources.Resource
 import com.example.gallerify.utils.resources.UserResource
 import com.example.gallerify.viewmodels.GalleryViewModel
 import com.example.gallerify.viewmodels.GalleryViewModelFactory
@@ -27,30 +33,65 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.reflect.typeOf
 
 class GalleryActivity : AppCompatActivity() {
 
     lateinit var viewModel: GalleryViewModel
+    lateinit var adapter: ImageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery)
         setSupportActionBar(toolbar)
         val repo = ImageRepository()
-        viewModel = ViewModelProvider(this, GalleryViewModelFactory(repo)).get(GalleryViewModel::class.java)
+        viewModel =
+            ViewModelProvider(this, GalleryViewModelFactory(repo)).get(GalleryViewModel::class.java)
         setListeners()
+        setObservers()
         ensureUserLoggedIn()
-        viewModel.currentUser.observe(this, androidx.lifecycle.Observer { resource->
-            when(resource){
+        setAdapter()
+        viewModel.getAllImages()
+    }
+
+    private fun setAdapter() {
+        adapter = ImageAdapter()
+        rvImages.let {
+            it.adapter = adapter
+            it.layoutManager = LinearLayoutManager(this)
+        }
+    }
+
+    private fun setObservers() {
+        viewModel.currentUser.observe(this, androidx.lifecycle.Observer { resource ->
+            when (resource) {
                 is UserResource.LoggedOut -> {
                     startActivity(LoginActivity.getLaunchIntent(this))
+                }
+            }
+        })
+        viewModel.images.observe(this, androidx.lifecycle.Observer { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    resource.data?.let {
+                        adapter.diffutil.submitList(it)
+                        Log.d("123", "succ")
+
+                    }
+                }
+                is Resource.Error -> {
+                    resource.message?.let {
+                        displayToast(it)
+                        Log.d("123", "fails")
+
+                    }
                 }
             }
         })
     }
 
     private fun ensureUserLoggedIn() {
-        if (viewModel.getCurrentUser() == null){
+        if (viewModel.getCurrentUser() == null) {
             startActivity(LoginActivity.getLaunchIntent(this))
         }
     }
@@ -61,7 +102,7 @@ class GalleryActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
+        return when (item.itemId) {
             R.id.action_logout -> {
                 viewModel.logout()
                 true
@@ -123,7 +164,7 @@ class GalleryActivity : AppCompatActivity() {
     @SuppressLint("SimpleDateFormat")
     @Throws(IOException::class)
     private fun createImageFile(): File {
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val timeStamp: String = SimpleDateFormat(TIME_PATTERN_IMAGEFILE_TIMESTAMP).format(Date())
         val storageDir: File? =
             getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
