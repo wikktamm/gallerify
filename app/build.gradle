@@ -57,6 +57,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'com.google.firebase:firebase-firestore-ktx:21.4.3'
 
+    //Firebase utils
+    implementation 'com.firebaseui:firebase-ui-storage:4.3.2'
+
     // Architectural Components
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 
@@ -78,6 +81,10 @@ dependencies {
 
     //Coil
     implementation("io.coil-kt:coil:0.9.5")
+
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
 
     //Tags
     implementation 'com.github.Cutta:TagView:1.3'

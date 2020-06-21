@@ -10,3 +10,4 @@ fun Activity.displayToast(stringId : Int){
 fun Activity.displayToast(str : String){
     Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
 }
+

@@ -22,19 +22,28 @@ class GalleryViewModel(private val repo: ImageRepository) : ViewModel() {
         }
     }
 
-    fun getCurrentUser() = repo.getCurrentUser()
+    fun getCurrentUser(): UserResource {
+        val user = repo.getCurrentUser()
+        if (user != null) return UserResource.LoggedIn(user.uid)
+        return UserResource.LoggedOut()
+    }
 
     fun logout() {
         repo.logout()
         currentUser.postValue(UserResource.LoggedOut())
     }
 
-    fun getAllImages(){
+    fun getAllImages() {
+        images.postValue(Resource.Loading())
         viewModelScope.launch {
-           // images.postValue(Resource.Loading())
             val result = repo.getAllImages()
             images.postValue(result)
-            Log.d("123",result.toString())
+            Log.d("123", result.toString())
         }
+    }
+
+    fun setUserAsLoggedIn() {
+        val userUid = repo.getCurrentUser()!!.uid
+        currentUser.postValue(UserResource.LoggedIn(userUid))
     }
 }

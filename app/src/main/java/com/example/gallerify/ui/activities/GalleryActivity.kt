@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
@@ -55,10 +56,14 @@ class GalleryActivity : AppCompatActivity() {
     }
 
     private fun setAdapter() {
-        adapter = ImageAdapter()
+        val currentUser = viewModel.getCurrentUser() as UserResource.LoggedIn
+        adapter = ImageAdapter(this, currentUser.uid)
         rvImages.let {
             it.adapter = adapter
             it.layoutManager = LinearLayoutManager(this)
+        }
+        adapter.setOnImageLoadedCallback{
+            hideProgressBar()
         }
     }
 
@@ -73,26 +78,37 @@ class GalleryActivity : AppCompatActivity() {
         viewModel.images.observe(this, androidx.lifecycle.Observer { resource ->
             when (resource) {
                 is Resource.Success -> {
+                    //progressBar will be hidden after the adapter will load the images
                     resource.data?.let {
                         adapter.diffutil.submitList(it)
-                        Log.d("123", "succ")
-
                     }
                 }
                 is Resource.Error -> {
+                    hideProgressBar()
                     resource.message?.let {
                         displayToast(it)
-                        Log.d("123", "fails")
-
                     }
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
                 }
             }
         })
     }
 
+    private fun showProgressBar() {
+        progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar() {
+        progressBar.visibility = View.INVISIBLE
+    }
+
     private fun ensureUserLoggedIn() {
-        if (viewModel.getCurrentUser() == null) {
+        if (viewModel.getCurrentUser() == UserResource.LoggedOut()) {
             startActivity(LoginActivity.getLaunchIntent(this))
+        } else {
+            viewModel.setUserAsLoggedIn()
         }
     }
 

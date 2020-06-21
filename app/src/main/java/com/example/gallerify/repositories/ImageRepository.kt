@@ -1,7 +1,6 @@
 package com.example.gallerify.repositories
 
 import android.graphics.Bitmap
-import android.util.Log
 import com.example.gallerify.models.LabelledImage
 import com.example.gallerify.utils.Constants.FIRESTORE_COLLECTION_IMAGES
 import com.example.gallerify.utils.Constants.FIRESTORE_COLLECTION_USERS_IMAGES
@@ -16,17 +15,19 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.label.ImageLabeling
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions
 import kotlinx.coroutines.tasks.await
-import org.threeten.bp.LocalDateTime
 import java.util.*
 
 class ImageRepository {
     private val imageCollection = Firebase.firestore.collection(FIRESTORE_COLLECTION_IMAGES)
     private val auth by lazy { FirebaseAuth.getInstance() }
-    private val storage by lazy { FirebaseStorage.getInstance() }
+    private val storageRef by lazy { FirebaseStorage.getInstance().reference  }
+
+    private fun StorageReference.getStorageFile(userID: String, fileName:String) = FirebaseStorage.getInstance().reference.child("${userID}/${fileName}.jpg")
 
     suspend fun labelAndSaveImage(bitmap: Bitmap): Resource<LabelledImage> {
         val labellingResult = labelImage(bitmap)
@@ -34,12 +35,9 @@ class ImageRepository {
         val imageUID = UUID.randomUUID().toString()
         val userUid = getCurrentUser()!!.uid
         val byteArray = ImageUtils.compressToByteArray(bitmap)
-        storage.reference.child("${userUid}/${imageUID}.jpg").putBytes(byteArray)
-            .addOnSuccessListener {
-                Log.d("123", "ok")
-            }
+        storageRef.getStorageFile(userUid, imageUID).putBytes(byteArray)
             .addOnFailureListener { e ->
-                Log.d("123", e.toString())
+                //todo
             }
         val labelledImage = LabelledImage(
             imageUID, labellingResult.data!!)//, LocalDateTime.now())
@@ -59,36 +57,24 @@ class ImageRepository {
     suspend fun getAllImages(): Resource<MutableList<LabelledImage>> {
         val images: MutableList<LabelledImage> = mutableListOf()
         var errorMessage: String? = null
-        val querySnapshot = imageCollection.document(getCurrentUser()!!.uid)
+        val currentUserUid=getCurrentUser()!!.uid
+        imageCollection.document(currentUserUid)
             .collection(FIRESTORE_COLLECTION_USERS_IMAGES)
             .get()
             .addOnCompleteListener { task: Task<QuerySnapshot> ->
                 if (task.isSuccessful) {
                         for(item in task.result!!){
                             val obj = item.toObject(LabelledImage::class.java)
-                            Log.d("123","uid"  + obj.uid)
-                            obj.tags?.let {
-                                Log.d("123","uid"  + it[0])
-                            }
-
                             images.add(obj)
                         }
                 }
                 else if(task.isCanceled){
-                    errorMessage = "dupa"
+                    task.exception?.let {
+                        errorMessage = it.message
+                    }
                 }
             }.await()
-//            .addOnSuccessListener { result ->
-//                for (image in result) {
-//                    val obj = image.toObject(LabelledImage::class.java)
-//                    images.add(obj)
-//                    Log.d("1235", "wygrana")
-//                }
-//            }
-//            .addOnFailureListener {
-//                errorMessage = it.message
-//            }.await()
-        if (errorMessage == null) return Resource.Success(images)
+        if (errorMessage == null) return Resource.Success(images, additionalData = currentUserUid)
         return Resource.Error(message = errorMessage)
     }
 
@@ -124,7 +110,6 @@ class ImageRepository {
             .addOnFailureListener {
                 errorOccurred = true
             }.await()
-        Log.d("123", tagList.joinToString(" "))
         if (errorOccurred) return Resource.Error()
         return Resource.Success(tagList)
     }

@@ -1,9 +1,9 @@
 package com.example.gallerify.utils
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Rect
-import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Handler
 import android.util.Log
@@ -12,8 +12,31 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.toBitmap
+import com.bumptech.glide.Glide
+import com.bumptech.glide.Registry
+import com.bumptech.glide.annotation.GlideModule
+import com.bumptech.glide.module.AppGlideModule
 import com.example.gallerify.utils.Constants.TAG_ImageUtil
+import com.firebase.ui.storage.images.FirebaseImageLoader
+import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
+
+
+@GlideModule
+class MyAppGlideModule : AppGlideModule() {
+    override fun registerComponents(
+        context: Context,
+        glide: Glide,
+        registry: Registry
+    ) {
+        // Register FirebaseImageLoader to handle StorageReference
+        registry.append(
+            StorageReference::class.java, InputStream::class.java,
+            FirebaseImageLoader.Factory()
+        )
+    }
+}
 
 object ImageUtils {
     fun compressToByteArray(imageView: ImageView): ByteArray {
